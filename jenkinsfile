@@ -6,7 +6,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github'
+                git 'https://github.com/Lalithreddy-12/CI-CD-deployment.git'
             }
         }
 
@@ -18,9 +18,13 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh '''
-                cp target/jenkins-demo.war /opt/tomcat/webapps/
-                '''
+                sshagent(credentials: ['tomcat-ssh-key']) {
+                    sh '''
+                    scp -o StrictHostKeyChecking=no \
+                    target/jenkins-demo.war \
+                    ubuntu@54.88.118.184:/home/ec2-user/apache/webapps/
+                    '''
+                }
             }
         }
 
