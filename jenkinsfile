@@ -1,5 +1,4 @@
 pipeline {
-
     agent any
 
     stages {
@@ -12,17 +11,12 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sshagent(credentials: ['tomcat-ssh-key']) {
-
-                    sh '''
-                    scp -o StrictHostKeyChecking=no \
-                    target/jenkins-demo.war \
-                    ec2-user@54.88.118.184:/home/ec2-user/apache/webapps/
-                    '''
-
-                }
+                sh '''
+                scp -o StrictHostKeyChecking=no \
+                target/jenkins-demo.war \
+                ec2-user@54.88.118.184:/home/ec2-user/apache/webapps/
+                '''
             }
         }
-
     }
 }
