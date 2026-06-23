@@ -9,7 +9,7 @@
 
 <h2>Hello from Jenkins Pipeline</h2>
 
-<p>This application was deployed automatically using Jenkins.</p>
+<p>This application was deployed automatically using Jenkins and Tomcat.</p>
 
 </body>
 </html>
