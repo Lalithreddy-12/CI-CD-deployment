@@ -4,12 +4,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/Lalithreddy-12/CI-CD-deployment.git'
-            }
-        }
-
         stage('Build') {
             steps {
                 sh 'mvn clean package'
