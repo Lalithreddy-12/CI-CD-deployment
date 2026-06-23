@@ -1,22 +1,45 @@
 pipeline {
     agent any
-
+    environment {
+        TOMCAT_HOST = "54.88.118.184"
+        TOMCAT_USER = "ec2-user"
+        TOMCAT_PATH = "/home/ec2-user/apache"
+    }
     stages {
-
         stage('Build') {
             steps {
                 sh 'mvn clean package'
             }
         }
-
-        stage('Deploy') {
+        stage('Clean Previous Deployment') {
             steps {
-                sh '''
-                scp -o StrictHostKeyChecking=no \
-                target/jenkins-demo.war \
-                ec2-user@54.88.118.184:/home/ec2-user/apache/webapps/
-                '''
+                sh """
+                ssh -o StrictHostKeyChecking=no ${TOMCAT_USER}@${TOMCAT_HOST} '
+                    rm -rf ${TOMCAT_PATH}/webapps/jenkins-demo
+                    rm -f ${TOMCAT_PATH}/webapps/jenkins-demo.war
+                '
+                """
             }
         }
+        stage('Deploy') {
+            steps {
+                sh """
+                scp -o StrictHostKeyChecking=no \
+                target/jenkins-demo.war \
+                ${TOMCAT_USER}@${TOMCAT_HOST}:${TOMCAT_PATH}/webapps/
+                """
+            }
+        }
+        stage('Verify Deployment') {
+            steps {
+                sh """
+                ssh -o StrictHostKeyChecking=no ${TOMCAT_USER}@${TOMCAT_HOST} '
+                    sleep 5
+                    ls -l ${TOMCAT_PATH}/webapps/
+                '
+                """
+            }
+        }
+
     }
 }
