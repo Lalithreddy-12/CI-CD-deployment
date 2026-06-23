@@ -1,0 +1,29 @@
+pipeline {
+
+    agent any
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git 'https://github'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                cp target/jenkins-demo.war /opt/tomcat/webapps/
+                '''
+            }
+        }
+
+    }
+
+}
